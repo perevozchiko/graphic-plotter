@@ -1,3 +1,2 @@
-# graphic-plotter
-dev
+# Graphics-plotter
 
