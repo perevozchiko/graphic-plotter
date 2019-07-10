@@ -37,7 +37,7 @@ void AxeCoordinates::drawGrid(QPainter &painter, double intervalGrid)
             painter.drawLine(QPointF(startAxePoint.x(), i * intervalGrid),
                              QPointF(endAxePoint.x(), i * intervalGrid));
         }
-        if (orientation == Orientation::vertical)
+        else
         {
             painter.drawLine(QPointF(i * intervalGrid, startAxePoint.y()),
                              QPointF(i * intervalGrid, endAxePoint.y()));

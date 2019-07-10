@@ -79,6 +79,7 @@ void GraphicFunction::scale(const double ratioX, const double ratioY)
 
 void GraphicFunction::draw(QPainter &painter)
 {
+    painter.save();
     painter.setPen(QPen(color, widthPenGraphic, Qt::SolidLine, Qt::RoundCap));
     painter.setRenderHint(QPainter::Antialiasing, true);
 
@@ -86,4 +87,5 @@ void GraphicFunction::draw(QPainter &painter)
     QVector<QPointF> pointsQVectorNegativeX = QVector<QPointF>::fromStdVector(pointsNegativeX);
     painter.drawPolyline(QPolygonF(pointsQVectorPositiveX));
     painter.drawPolyline(QPolygonF(pointsQVectorNegativeX));
+    painter.restore();
 }
