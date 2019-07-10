@@ -21,11 +21,11 @@ void GraphicFunction::calculatePoints(Parser expression)
         valueYOfNegativeX = expression.calculate(valueXNegatitve);
 
         // Решить проблему с плюс и минус бесконечность, при увел. массштаба минус бесконечность превращается в ноль
-        if (valueYOfPositiveX == infinity)
+        if (std::isinf(valueYOfPositiveX))
         {
             valueYOfPositiveX =  2e9;
         }
-        if (valueYOfNegativeX == infinity)
+        if (std::isinf(valueYOfNegativeX))
         {
             valueYOfNegativeX =  -2e9;
         }

@@ -162,7 +162,7 @@ double Parser::calculateOperandsWithOperator(double leftOperand, double rightOpe
         }
         else
         {
-            return std::numeric_limits<int>::max();
+            return std::numeric_limits<double>::infinity();
         }
     case '^':
         return std::pow(leftOperand, rightOperand);
