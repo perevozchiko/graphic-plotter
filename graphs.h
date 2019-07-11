@@ -19,23 +19,23 @@ public:
     explicit Graphs(QWidget *parent = nullptr);
 
 signals:
-    void scaleGraphic(double);
+    void scaleGraphic(double value);
     void setDefaultScale();
-    void moveCenterCoordinate(QPoint);
+    void moveCenterCoordinate(QPoint value);
     void insertNewRow();
     void setInvalidItem();
 
 public slots:
-    void getUserInputExpression(const QString&);
-    void zoomInGridY(double);
-    void zoomOutGridY(double);
-    void zoomInGridX(double);
-    void zoomOutGridX(double);
-    void zoomGraphicY(double);
-    void zoomGraphicX(double);
+    void getUserInputExpression(const QString& inputExpression);
+    void zoomInGridY(double intervalNotch);
+    void zoomOutGridY(double intervalNotch);
+    void zoomInGridX(double intervalNotch);
+    void zoomOutGridX(double intervalNotch);
+    void zoomGraphicY(double intervalCoordinate);
+    void zoomGraphicX(double intervalCoordinate);
     void setDefaultScaleY();
     void setDefaultScaleX();
-    void setInputExpression(QTableWidgetItem*);
+    void setInputExpression(QTableWidgetItem* actualItem);
 
 private:
     std::vector <QSharedPointer<GraphicFunction>> graphics;

@@ -11,17 +11,17 @@ public:
     explicit ScaleAxeWidget(QWidget *parent = nullptr);
 
 signals:
-    void moveUp(double);
-    void moveDown(double);
-    void scaleGraphicY(double);
-    void scaleGraphicX(double);
+    void moveUp(double value);
+    void moveDown(double value);
+    void scaleGraphicY(double value);
+    void scaleGraphicX(double value);
     void setDefaultScaleY();
     void setDefaultScaleX();
 
 public slots:
-    void scaleGraphicWithWheels(double);
+    void scaleGraphicWithWheels(double value);
     void setDefaultScale();
-    void setMovingCenter(QPoint);
+    void setMovingCenter(QPoint movingPoint);
 
 private:
     Orientation orientation;
