@@ -1,42 +1,43 @@
 #ifndef PARSER_H
 #define PARSER_H
 
-#include <string>
-#include <stack>
 #include <cmath>
 #include "utils.h"
+#include <qchar.h>
+#include <qstack.h>
+#include <qstring.h>
 
 class Parser
 {
 public:
-    Parser(const std::string& _userInputExpression);
+    Parser(const QString& _userInputExpression);
     void convertToPolishExpression();
     double calculate(double valueX);
 
-    std::string getExpressionPolishNotation() const;
+    QString getExpressionPolishNotation() const;
 
 private:
-    std::string userInputExpression;
-    std::string expressionPolishNotation;
-    std::stack<char> operators;
-    std::stack<double> operands;
-    std::string symbolsNumber;
+    QString userInputExpression;
+    QString expressionPolishNotation;
+    QStack<QChar> operators;
+    QStack<double> operands;
+    QString symbolsNumber;
 
-    int getPriorityOperator(char symbol);
-    void checkAndAddDigits(char symbol);
-    void addDigitToExpression(size_t currentPosition, char symbol);
-    void addBracketToExpression(char symbol);
-    void addOperatorToExpression(char symbol);
+    int getPriorityOperator(QChar symbol);
+    void checkAndAddDigits(QChar symbol);
+    void addDigitToExpression(size_t currentPosition, QChar symbol);
+    void addBracketToExpression(QChar symbol);
+    void addOperatorToExpression(QChar symbol);
     void addVariableToExpression();
     void addDecimalSeparatorToExpression();
-    void addMathSymbolToExpression(char symbol);
+    void addMathSymbolToExpression(QChar symbol);
     void addOperatorsFromStackToExpression();
-    void addDigitToOperands(char symbol);
+    void addDigitToOperands(QChar symbol);
     void addValueVariableToOperands(double valueX);
-    void calculateIntermediateResults(char symbolOperator);
-    double calculateOperandsWithOperator(double leftOperand, double rightOperand, char symbolOperator);
+    void calculateIntermediateResults(QChar symbolOperator);
+    double calculateOperandsWithOperator(double leftOperand, double rightOperand, QChar symbolOperator);
     double getResultExpression();
-    bool isDecimalSeparator(char symbol);
+    bool isDecimalSeparator(QChar symbol);
 };
 
 #endif // PARSER_H

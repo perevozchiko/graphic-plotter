@@ -53,7 +53,7 @@ QString GraphicFunction::getInputUserExpression() const
 void GraphicFunction::setInputUserExpression(const QString& value)
 {
     inputUserExpression = value;
-    Parser expression(inputUserExpression.toStdString());
+    Parser expression(inputUserExpression);
 
     expression.convertToPolishExpression();
     calculatePoints(expression);

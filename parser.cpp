@@ -1,23 +1,23 @@
 #include "parser.h"
-#include <cmath>
 
-Parser::Parser(const std::string& _userInputExpression) :
+
+Parser::Parser(const QString& _userInputExpression) :
     userInputExpression(_userInputExpression)
 {
-    removeSpaces(userInputExpression);
+    userInputExpression.remove(' ');
 }
 
-void Parser::addDigitToExpression(size_t currentPosition, char symbol)
+void Parser::addDigitToExpression(size_t currentPosition, QChar symbol)
 {
-    expressionPolishNotation += charToStr(symbol);
-    size_t nextPosition = currentPosition + 1;
-    if (!std::isdigit(userInputExpression[nextPosition]) && !isDecimalSeparator(userInputExpression[nextPosition]))
+    expressionPolishNotation += symbol;
+    int nextPosition = currentPosition + 1;
+    if (!userInputExpression[nextPosition].isDigit() && !isDecimalSeparator(userInputExpression[nextPosition]))
     {
         expressionPolishNotation += "#";
     }
 }
 
-void Parser::addBracketToExpression(char symbol)
+void Parser::addBracketToExpression(QChar symbol)
 {
     if (symbol == '(')
     {
@@ -29,22 +29,20 @@ void Parser::addBracketToExpression(char symbol)
         {
             while(operators.top() != '(')
             {
-                expressionPolishNotation += charToStr(operators.top());
-                operators.pop();
+                expressionPolishNotation += operators.pop();
             }
             operators.pop(); // выталкиваем последний оператор
         }
     }
 }
 
-void Parser::addOperatorToExpression(char symbol)
+void Parser::addOperatorToExpression(QChar symbol)
 {
-    if(!operators.empty() && getPriorityOperator(symbol) <= getPriorityOperator(operators.top()))
+    if(!operators.empty() && getPriorityOperator(symbol) <= getPriorityOperator(operators.back()))
     {
         while(!operators.empty() && operators.top() != '(')
         {
-            expressionPolishNotation += charToStr(operators.top());
-            operators.pop();
+            expressionPolishNotation += operators.pop();
         }
     }
     operators.push(symbol);
@@ -60,9 +58,9 @@ void Parser::addDecimalSeparatorToExpression()
     expressionPolishNotation += ".";
 }
 
-void Parser::addMathSymbolToExpression(char symbol)
+void Parser::addMathSymbolToExpression(QChar symbol)
 {
-    switch (symbol)
+    switch (symbol.unicode())
     {
     case '+':
     case '-':
@@ -98,20 +96,19 @@ void Parser::addOperatorsFromStackToExpression()
 {
     while(!operators.empty())
     {
-        expressionPolishNotation += charToStr(operators.top());
-        operators.pop();
+        expressionPolishNotation += operators.pop();
     }
 }
 
 void Parser::convertToPolishExpression()
 {
-    size_t size = userInputExpression.size();
+    int size = userInputExpression.size();
 
-    for (size_t currentPosition = 0; currentPosition < size; ++currentPosition)
+    for (int currentPosition = 0; currentPosition < size; ++currentPosition)
     {
-        char symbol = userInputExpression[currentPosition];
+        QChar symbol = userInputExpression[currentPosition];
 
-        if (std::isdigit(symbol))
+        if (symbol.isDigit())
         {
             addDigitToExpression(currentPosition, symbol);
         }
@@ -125,16 +122,16 @@ void Parser::convertToPolishExpression()
     addOperatorsFromStackToExpression();
 }
 
-void Parser::addDigitToOperands(char symbol)
+void Parser::addDigitToOperands(QChar symbol)
 {
-    if(std::isdigit(symbol) || symbol == '.')
+    if(symbol.isDigit() || symbol == '.')
     {
         symbolsNumber += symbol;
     }
 
     if (symbol == '#')
     {
-        double operand = std::atof(symbolsNumber.c_str());
+        double operand = symbolsNumber.toDouble();
         operands.push(operand);
         symbolsNumber = "";
     }
@@ -145,9 +142,9 @@ void Parser::addValueVariableToOperands(double valueX)
     operands.push(valueX);
 }
 
-double Parser::calculateOperandsWithOperator(double leftOperand, double rightOperand, char symbolOperator)
+double Parser::calculateOperandsWithOperator(double leftOperand, double rightOperand, QChar symbolOperator)
 {
-    switch (symbolOperator)
+    switch (symbolOperator.unicode())
     {
     case '+':
         return leftOperand + rightOperand;
@@ -171,15 +168,15 @@ double Parser::calculateOperandsWithOperator(double leftOperand, double rightOpe
     }
 }
 
-void Parser::calculateIntermediateResults(char symbolOperator)
+void Parser::calculateIntermediateResults(QChar symbolOperator)
 {
     double leftOperand = 0;
-    double rightOperand = popAndTop(operands);
+    double rightOperand = operands.pop();
 
     // для работы с отрицательными числами ("-5" будет "0-5")
     if(!operands.empty())
     {
-        leftOperand = popAndTop(operands);
+        leftOperand = operands.pop();
     }
     else
     {
@@ -205,16 +202,16 @@ double Parser::getResultExpression()
     }
 }
 
-bool Parser::isDecimalSeparator(char symbol)
+bool Parser::isDecimalSeparator(QChar symbol)
 {
     return (symbol == '.' || symbol == ',');
 }
 
 double Parser::calculate(double valueX)
 {
-    for (char symbol : expressionPolishNotation)
+    for (QChar symbol : expressionPolishNotation)
     {
-        if (std::isdigit(symbol) || symbol == '#' || symbol == '.')
+        if (symbol.isDigit() || symbol == '#' || symbol == '.')
         {
             addDigitToOperands(symbol);
         }
@@ -230,14 +227,14 @@ double Parser::calculate(double valueX)
     return getResultExpression();
 }
 
-std::string Parser::getExpressionPolishNotation() const
+QString Parser::getExpressionPolishNotation() const
 {
     return expressionPolishNotation;
 }
 
-int Parser::getPriorityOperator(char symbol)
+int Parser::getPriorityOperator(QChar symbol)
 {
-    switch (symbol)
+    switch (symbol.unicode())
     {
     case '+':
     case '-':

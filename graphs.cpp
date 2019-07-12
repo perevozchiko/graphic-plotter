@@ -127,6 +127,7 @@ void Graphs::moveCenter(QPainter &painter)
     movingX += deltaMoving.x();
     movingY += -deltaMoving.y();
     painter.translate(width()/2 + movingX, height()/2 + movingY);
+    painter.scale(1.0, -1.0);
     deltaMoving = QPoint(0, 0);
 }
 
@@ -144,9 +145,9 @@ void Graphs::recountPointsGraphics()
 void Graphs::paintEvent(QPaintEvent* event)
 {
     Q_UNUSED(event);
-    QImage graphic(size(), QImage::Format_ARGB32_Premultiplied);
+
     QPainter painter;
-    painter.begin(&graphic);
+    painter.begin(this);
     painter.eraseRect(0, 0, width(), height());
     painter.setPen(QPen(Qt::black, widthPenBorderGraphWidget));
     painter.drawRect(0, 0, width(), height());
@@ -167,9 +168,6 @@ void Graphs::paintEvent(QPaintEvent* event)
         }
     }
 
-    painter.end();
-    painter.begin(this);
-    painter.drawImage(0, 0, graphic.mirrored(false, true));
     painter.end();
 }
 

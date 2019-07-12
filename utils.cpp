@@ -26,9 +26,9 @@ std::string charToStr(char symbol)
     return string;
 }
 
-void removeSpaces(std::string& str)
+void removeSpaces(QString& str)
 {
-    str.erase(remove_if(str.begin(), str.end(), isspace), str.end());
+    str.remove(" ");
 }
 
 Qt::GlobalColor getColor(int numColor)

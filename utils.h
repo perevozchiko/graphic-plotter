@@ -10,7 +10,7 @@ double charToInt(char symbol);
 
 std::string charToStr(char symbol);
 
-void removeSpaces(std::string &str);
+void removeSpaces(QString& str);
 
 Qt::GlobalColor getColor(int numColor);
 
