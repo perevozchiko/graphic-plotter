@@ -192,7 +192,7 @@ void Graphs::mouseDoubleClickEvent(QMouseEvent* event)
 void Graphs::mousePressEvent(QMouseEvent* event)
 {
     lastMousePosX = event->x();
-    lastMousePosY = event->y();
+    lastMousePosY = -event->y();
     event->accept();
 }
 
@@ -201,9 +201,9 @@ void Graphs::mouseMoveEvent(QMouseEvent* event)
     if (event->buttons() == Qt::LeftButton)
     {
         deltaMoving.setX(event->x() - lastMousePosX);
-        deltaMoving.setY(event->y() - lastMousePosY);
+        deltaMoving.setY(-event->y() - lastMousePosY);
         lastMousePosX = event->x();
-        lastMousePosY = event->y();
+        lastMousePosY = -event->y();
         emit moveCenterCoordinate(deltaMoving);
         event->accept();
         update();
