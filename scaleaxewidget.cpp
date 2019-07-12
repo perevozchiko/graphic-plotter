@@ -34,7 +34,7 @@ void ScaleAxeWidget::setDefaultScale()
 void ScaleAxeWidget::setMovingCenter(QPoint movingPoint)
 {
     movingX += movingPoint.x();
-    movingY += movingPoint.y();
+    movingY += -movingPoint.y();
     update();
 }
 
