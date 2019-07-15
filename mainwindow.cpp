@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent)
     connect(tableGraphics, &TableGraphics::itemChanged, graphs, &Graphs::setInputExpression);
     connect(graphs, &Graphs::setInvalidItem, tableGraphics, &TableGraphics::selectWrongCell);
 
+    connect(tableGraphics, &TableGraphics::deleteGraphic, graphs, &Graphs::deleteGraphic);
 
     connect(scaleVerticalWidget, &ScaleAxeWidget::moveUp, graphs, &Graphs::zoomInGridY);
     connect(scaleVerticalWidget, &ScaleAxeWidget::moveDown, graphs, &Graphs::zoomOutGridY);

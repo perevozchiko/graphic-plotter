@@ -16,9 +16,15 @@ class TableGraphics : public QTableWidget
 public:
     explicit TableGraphics();
 
+signals:
+    void deleteGraphic(QString expression);
 public slots:
     void insertNewRow();
-   void selectWrongCell();
+    void selectWrongCell();
+
+private slots:
+    void deleteRow();
+
 
 private:
     QStringList headersColumns;

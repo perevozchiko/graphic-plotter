@@ -11,6 +11,7 @@
 #include "utility"
 #include "validator.h"
 #include <QValidator>
+#include <QMap>
 
 class Graphs : public QWidget
 {
@@ -36,9 +37,10 @@ public slots:
     void setDefaultScaleY();
     void setDefaultScaleX();
     void setInputExpression(QTableWidgetItem* actualItem);
+    void deleteGraphic(QString expression);
 
 private:
-    std::vector <QSharedPointer<GraphicFunction>> graphics;
+    QMap <QString, QSharedPointer<GraphicFunction>> graphics;
     AxeCoordinates horizontalAxe;
     AxeCoordinates verticalAxe;
     QString expression;

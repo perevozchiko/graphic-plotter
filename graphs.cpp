@@ -89,9 +89,9 @@ void Graphs::setInputExpression(QTableWidgetItem* actualItem)
         {
 
             unsigned int numRow = qAbs(actualItem->row());
-            if (graphics.size() > numRow)
+            if (graphics.contains(actualItem->text()))
             {
-                auto graphic = graphics[actualItem->row()];
+                auto graphic = graphics[actualItem->text()];
                 QString currentExpression = graphic->getInputUserExpression();
 
                 if (currentExpression != expression)
@@ -106,7 +106,7 @@ void Graphs::setInputExpression(QTableWidgetItem* actualItem)
                     auto graphic = QSharedPointer<GraphicFunction>::create();
                     graphic->setInputUserExpression(actualItem->text());
                     graphic->setColor(getColor(actualItem->row()));
-                    graphics.push_back(graphic);
+                    graphics.insert(actualItem->text(), graphic);
                     emit insertNewRow();
                 }
             }
@@ -119,6 +119,12 @@ void Graphs::setInputExpression(QTableWidgetItem* actualItem)
         }
     }
 
+    update();
+}
+
+void Graphs::deleteGraphic(QString expression)
+{
+    graphics.remove(expression);
     update();
 }
 
