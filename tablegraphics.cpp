@@ -33,6 +33,8 @@ void TableGraphics::insertNewRow()
     cellExpression->setFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled);
     setItem(rowCount()-1, 0, cellColorGraphic);
     setItem(rowCount()-1, 1, cellExpression);
+    openPersistentEditor(cellExpression);
+    setCurrentItem(cellExpression);
 }
 
 void TableGraphics::selectWrongCell()
