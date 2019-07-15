@@ -42,10 +42,11 @@ const double minCoordinate = 0.01;
 const double widthPenBorderGraphWidget = 1.5;
 
 // GraphicFunction
-const int numberOfPoints = 2000;
+const int numberOfPoints = 400;
 const double widthPenGraphic = 2.5;
 const double infinity = std::numeric_limits<int>::max();
 const int defaultScaleGraphic = 50;
+const double step = 0.1;
 
 
 }

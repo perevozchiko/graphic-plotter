@@ -10,33 +10,32 @@ GraphicFunction::GraphicFunction()
 
 void GraphicFunction::calculatePoints(Parser expression)
 {
-    double valueXPosititve = 0;
-    double valueXNegatitve = 0;
-    double valueYOfPositiveX = 0;
-    double valueYOfNegativeX = 0;
-    pointsNegativeX.clear();
-    pointsPositiveX.clear();
-    for (int i = 0; i < numberOfPoints/2; i++)
+    double valueX = 0;
+    double valueY = 0;
+
+    points.clear();
+    for (int i = 0; i < numberOfPoints; i++)
     {
-        valueXPosititve = i/100.0;
-        valueYOfPositiveX = expression.calculate(valueXPosititve);
-        valueXNegatitve = -i/100.0;
-        valueYOfNegativeX = expression.calculate(valueXNegatitve);
+        valueX = (i - numberOfPoints/2) * step; // точки от -numberOfPoints/2 до (numberOfPoints/2)
+        valueY = expression.calculate(valueX);
 
-        // Решить проблему с плюс и минус бесконечность, при увел. массштаба минус бесконечность превращается в ноль
-        if (std::isinf(valueYOfPositiveX))
+        //Решить проблему с плюс и минус бесконечность, при увел. массштаба минус бесконечность превращается в ноль
+        if (std::isinf(valueY))
         {
-            valueYOfPositiveX =  2e9;
-        }
-        if (std::isinf(valueYOfNegativeX))
-        {
-            valueYOfNegativeX =  -2e9;
+//            if (valueY > 0)
+//            {
+//                valueY =  2e9;
+//            }
+//            else
+//            {
+//                valueY =  -2e9;
+//            }
+            //points.push_back(QPointF(valueX, -valueY));
         }
 
-        pointsPositiveX.push_back(QPointF(valueXPosititve, valueYOfPositiveX));
-        pointsNegativeX.push_back(QPointF(valueXNegatitve, valueYOfNegativeX));
+        points.push_back(QPointF(valueX, valueY));
     }
-    pointsPositiveX.insert(pointsPositiveX.begin(), pointsNegativeX[1]);
+    // points.insert(points.begin(), pointsNegativeX[1]);
 }
 
 QColor GraphicFunction::getColor() const
@@ -69,12 +68,10 @@ void GraphicFunction::setInputUserExpression(const QString& value)
 
 void GraphicFunction::scale(const double ratioX, const double ratioY)
 {
-    for (int i = 0; i < numberOfPoints/2; i++)
+    for (int i = 0; i < numberOfPoints; i++)
     {
-        pointsPositiveX[i].setX(pointsPositiveX[i].x() * ratioX / lastScaleRatioX);
-        pointsPositiveX[i].setY(pointsPositiveX[i].y() * ratioY / lastScaleRatioY);
-        pointsNegativeX[i].setX(pointsNegativeX[i].x() * ratioX / lastScaleRatioX);
-        pointsNegativeX[i].setY(pointsNegativeX[i].y() * ratioY / lastScaleRatioY);
+        points[i].setX(points[i].x() * ratioX / lastScaleRatioX);
+        points[i].setY(points[i].y() * ratioY / lastScaleRatioY);
     }
     lastScaleRatioX = ratioX;
     lastScaleRatioY = ratioY;
@@ -124,22 +121,34 @@ void GraphicFunction::draw(QPainter &painter)
     painter.setPen(QPen(color, widthPenGraphic, Qt::SolidLine, Qt::RoundCap));
     painter.setRenderHint(QPainter::Antialiasing, true);
 
-    QVector<QPointF> pointsQVectorPositiveX = QVector<QPointF>::fromStdVector(pointsPositiveX);
-    QVector<QPointF> pointsQVectorNegativeX = QVector<QPointF>::fromStdVector(pointsNegativeX);
-
     QPainterPath path;
-    path.moveTo(pointsQVectorPositiveX[1]);
-    for (int j = 0; j < pointsQVectorPositiveX.count() - 3; j++)
+    QPainterPath pathAfterGap;
+    path.moveTo(points[0]);
+    bool gap = false;
+    for (int j = 0; j < points.count() - 3; j++)
     {
         QPointF c1, c2;
-        calcBezierPoints(pointsQVectorPositiveX.at(j), pointsQVectorPositiveX.at(j + 1), pointsQVectorPositiveX.at(j + 2), pointsQVectorPositiveX.at(j + 3), c1, c2);
-        path.cubicTo(c1, c2, pointsQVectorPositiveX.at(j + 2));
+        calcBezierPoints(points.at(j), points.at(j + 1), points.at(j + 2), points.at(j + 3), c1, c2);
+        if (j && std::isinf(points.at(j).y()))
+        {
+            gap = true;
+            pathAfterGap.moveTo(points.at(j+1).x(), points.at(j+1).y());
+        }
+
+        if (!gap)
+        {
+            path.cubicTo(c1, c2, points.at(j + 2));
+        }
+        else
+        {
+            pathAfterGap.cubicTo(c1, c2, points.at(j + 2));
+        }
     }
     painter.drawPath(path);
-
-
-    //painter.drawPolyline(QPolygonF(pointsQVectorPositiveX));
-    //painter.drawPolyline(QPolygonF(pointsQVectorNegativeX));
+    if (gap)
+    {
+        painter.drawPath(pathAfterGap);
+    }
     painter.restore();
 }
 
