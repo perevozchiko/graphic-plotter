@@ -30,9 +30,7 @@ public:
 
 private:
     QString inputUserExpression;
-    std::vector<QPointF> points;
-    std::vector<QPointF> pointsNegativeX;
-    std::vector<QPointF> pointsPositiveX;
+    QVector<QPointF> points;
     double lastScaleRatioX{1};
     double lastScaleRatioY{1};
     void calculatePoints(Parser expression);
