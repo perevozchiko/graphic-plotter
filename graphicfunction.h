@@ -28,6 +28,9 @@ public:
     QString getInputUserExpression() const;
     void setInputUserExpression(const QString& value);
 
+    int getIdRow() const;
+    void setIdRow(int value);
+
 private:
     QString inputUserExpression;
     QVector<QPointF> points;
@@ -35,6 +38,7 @@ private:
     double lastScaleRatioY{1};
     void calculatePoints(Parser expression);
     QColor color{Qt::black};
+    int idRowTable;
 };
 
 #endif // GRAPHICFUNCTION_H

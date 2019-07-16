@@ -36,15 +36,15 @@ void TableGraphics::insertNewRow()
     Qt::GlobalColor color = getColor(rowCount()-1);
     cellColorGraphic->setBackground(QColor(color));
     cellColorGraphic->setFlags(Qt::NoItemFlags);
-    cellExpression->setFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled);
+    cellExpression->setFlags(Qt::ItemIsEnabled);
+
     buttonDelete->setIcon(QIcon("del.jpeg"));
     buttonLayout->addWidget(buttonDelete);
-    buttonLayout->setContentsMargins(4,4,4,4);
+    buttonLayout->setContentsMargins(3,3,3,3);
     buttonWidget->setLayout(buttonLayout);
 
     setItem(rowCount()-1, 0, cellColorGraphic);
     setItem(rowCount()-1, 1, cellExpression);
-
     setCellWidget(rowCount()-1, 2, buttonWidget);
 
     connect(buttonDelete, &QPushButton::clicked, this, &TableGraphics::deleteRow);
@@ -73,7 +73,7 @@ void TableGraphics::deleteRow()
         {
             insertNewRow();
         }
-        setCurrentCell(indexRow, 1);
+        //setCurrentCell(indexRow, 1);
     }
 }
 

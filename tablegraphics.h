@@ -6,8 +6,9 @@
 #include <QTableWidget>
 #include <QHBoxLayout>
 #include <graphicfunction.h>
-#include <vector>
+#include <QVector>
 #include "utils.h"
+#include <QMap>
 
 
 class TableGraphics : public QTableWidget

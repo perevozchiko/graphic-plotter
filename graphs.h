@@ -36,11 +36,12 @@ public slots:
     void zoomGraphicX(double intervalCoordinate);
     void setDefaultScaleY();
     void setDefaultScaleX();
-    void setInputExpression(QTableWidgetItem* actualItem);
+    void setInputExpression(QTableWidgetItem* currentCell);
     void deleteGraphic(QString expression);
 
 private:
-    QMap <QString, QSharedPointer<GraphicFunction>> graphics;
+    QMap <QString, QSharedPointer<GraphicFunction>> graphicsMap;
+    QMap <int, QString> expressions;
     AxeCoordinates horizontalAxe;
     AxeCoordinates verticalAxe;
     QString expression;

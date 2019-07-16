@@ -74,57 +74,49 @@ void Graphs::setDefaultScaleX()
     update();
 }
 
-void Graphs::setInputExpression(QTableWidgetItem* actualItem)
+void Graphs::setInputExpression(QTableWidgetItem* currentCell)
 {
-    if (actualItem->column() == 1)
+    if (currentCell->column() == 1)
     {
-
         //проверка валидности выражения
         Validator checker;
         int pos = 0;
-        QString expression = actualItem->text();
+        QString expression = currentCell->text();
         QValidator::State stateValidate = checker.validate(expression, pos);
 
-        if (stateValidate == QValidator::Acceptable)
+        QTableWidget* tableWidget = qobject_cast<QTableWidget*> (sender());
+        int numRows = tableWidget->rowCount();
+
+        if(currentCell->row() == numRows-1 && !currentCell->text().isEmpty())
         {
-
-            unsigned int numRow = qAbs(actualItem->row());
-            if (graphics.contains(actualItem->text()))
+            expressions.insert(currentCell->row()-1, expression);
+            auto graphic = QSharedPointer<GraphicFunction>::create();
+            graphic->setInputUserExpression(expression);
+            graphic->setColor(getColor(currentCell->row()));
+            graphicsMap.insert(expression, graphic);
+            emit insertNewRow();
+        }
+        else
+        {
+            QString prevExpression = expressions[currentCell->row()-1];
+            if (prevExpression != expression)
             {
-                auto graphic = graphics[actualItem->text()];
-                QString currentExpression = graphic->getInputUserExpression();
-
-                if (currentExpression != expression)
-                {
-                    graphic->setInputUserExpression(expression);
-                }
-            }
-            else
-            {
-                if (!actualItem->text().isEmpty())
-                {
-                    auto graphic = QSharedPointer<GraphicFunction>::create();
-                    graphic->setInputUserExpression(actualItem->text());
-                    graphic->setColor(getColor(actualItem->row()));
-                    graphics.insert(actualItem->text(), graphic);
-                    emit insertNewRow();
-                }
+                auto prevGraphicQShared = graphicsMap.take(prevExpression);
+                GraphicFunction prevGraphic = *prevGraphicQShared.get();
+                prevGraphic.setInputUserExpression(expression);
+                QSharedPointer<GraphicFunction> graph (&prevGraphic);
+                graphicsMap.insert(expression, graph);
+                expressions.insert(currentCell->row(), expression);
             }
         }
-        else if (stateValidate == QValidator::Invalid)
-        {
-            // emit подсвечивание ячейки в которой неверно выражение
-            emit setInvalidItem();
-            qDebug() << "invalid";
-        }
+
     }
-
     update();
 }
 
 void Graphs::deleteGraphic(QString expression)
 {
-    graphics.remove(expression);
+    graphicsMap.remove(expression);
     update();
 }
 
@@ -139,7 +131,7 @@ void Graphs::moveCenter(QPainter &painter)
 
 void Graphs::recountPointsGraphics()
 {
-    for (auto graphic : graphics)
+    for (auto graphic : graphicsMap)
     {
         if (!graphic->getInputUserExpression().isEmpty())
         {
@@ -162,10 +154,10 @@ void Graphs::paintEvent(QPaintEvent* event)
     horizontalAxe.draw(painter, width()/2 + abs(movingX) + abs(movingY), intervalGridY);
     verticalAxe.draw(painter, height()/2 + abs(movingY) + abs(movingX), intervalGridX);
 
-    if(!graphics.empty())
+    if(!graphicsMap.empty())
     {
         recountPointsGraphics();
-        for (const auto graphic : graphics)
+        for (const auto graphic : graphicsMap)
         {
             if (!graphic->getInputUserExpression().isEmpty())
             {

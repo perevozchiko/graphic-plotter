@@ -21,21 +21,31 @@ void GraphicFunction::calculatePoints(Parser expression)
 
         //Решить проблему с плюс и минус бесконечность, при увел. массштаба минус бесконечность превращается в ноль
         if (std::isinf(valueY))
-        {
-//            if (valueY > 0)
-//            {
-//                valueY =  2e9;
-//            }
-//            else
-//            {
-//                valueY =  -2e9;
-//            }
+        {/*
+            if (valueY > 0)
+            {
+                valueY =  2e9;
+            }
+            else
+            {
+                valueY =  -2e9;
+            }*/
             //points.push_back(QPointF(valueX, -valueY));
         }
 
         points.push_back(QPointF(valueX, valueY));
     }
     // points.insert(points.begin(), pointsNegativeX[1]);
+}
+
+int GraphicFunction::getIdRow() const
+{
+    return idRowTable;
+}
+
+void GraphicFunction::setIdRow(int value)
+{
+    idRowTable = value;
 }
 
 QColor GraphicFunction::getColor() const
