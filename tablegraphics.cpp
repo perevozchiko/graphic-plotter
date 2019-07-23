@@ -7,6 +7,9 @@
 #include <QLineEdit>
 #include <QPaintEngine>
 #include <QPushButton>
+#include <QUuid>
+
+int TableGraphics::idDataRow = 0;
 
 TableGraphics::TableGraphics() :
     QTableWidget(0, 3)
@@ -22,19 +25,24 @@ TableGraphics::TableGraphics() :
 
     // создание пустой строки
     insertNewRow();
+
+
 }
 
 void TableGraphics::insertNewRow()
 {
     insertRow(rowCount());
+    idDataRow++;
+    auto color = getColor(idDataRow);
+    int currentNumRow = rowCount()-1;
     auto cellColorGraphic = new QTableWidgetItem();
     auto cellExpression = new QTableWidgetItem();
     auto buttonWidget = new QWidget;
     auto buttonDelete = new QPushButton;
     auto buttonLayout = new QHBoxLayout(buttonWidget);
 
-    Qt::GlobalColor color = getColor(rowCount()-1);
-    cellColorGraphic->setBackground(QColor(color));
+    cellExpression->setData(Qt::UserRole, idDataRow);
+    cellColorGraphic->setBackground(getColor(idDataRow));
     cellColorGraphic->setFlags(Qt::NoItemFlags);
     cellExpression->setFlags(Qt::ItemIsEnabled);
 
@@ -43,9 +51,9 @@ void TableGraphics::insertNewRow()
     buttonLayout->setContentsMargins(3,3,3,3);
     buttonWidget->setLayout(buttonLayout);
 
-    setItem(rowCount()-1, 0, cellColorGraphic);
-    setItem(rowCount()-1, 1, cellExpression);
-    setCellWidget(rowCount()-1, 2, buttonWidget);
+    setItem(currentNumRow, 0, cellColorGraphic);
+    setItem(currentNumRow, 1, cellExpression);
+    setCellWidget(currentNumRow, 2, buttonWidget);
 
     connect(buttonDelete, &QPushButton::clicked, this, &TableGraphics::deleteRow);
 
@@ -62,17 +70,18 @@ void TableGraphics::selectWrongCell()
 void TableGraphics::deleteRow()
 {
     QWidget* cellWidget = qobject_cast<QWidget*> (sender()->parent());
+
     if (cellWidget)
     {
-        int indexRow = indexAt(cellWidget->pos()).row();
-        QString expression = item(indexRow, 1)->text();
-        emit deleteGraphic(expression);
-        removeRow(indexRow);
+        int numberRow = indexAt(cellWidget->pos()).row();
+        int idRow = item(numberRow, 1)->data(Qt::UserRole).toInt();
+        emit deleteGraphic(idRow);
 
-        if(rowCount() < 1)
+        if (numberRow != rowCount()-1)
         {
-            insertNewRow();
+            removeRow(numberRow);
         }
+
         //setCurrentCell(indexRow, 1);
     }
 }

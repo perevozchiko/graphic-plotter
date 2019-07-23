@@ -18,6 +18,12 @@ class Graphs : public QWidget
     Q_OBJECT
 public:
     explicit Graphs(QWidget *parent = nullptr);
+    struct GraphicData
+    {
+        int numRow{0};
+        QString expression;
+        GraphicFunction graphicFunction;
+    };
 
 signals:
     void scaleGraphic(double value);
@@ -37,11 +43,10 @@ public slots:
     void setDefaultScaleY();
     void setDefaultScaleX();
     void setInputExpression(QTableWidgetItem* currentCell);
-    void deleteGraphic(QString expression);
+    void deleteGraphic(int idRow);
 
 private:
-    QMap <QString, QSharedPointer<GraphicFunction>> graphicsMap;
-    QMap <int, QString> expressions;
+    QMap <int, GraphicData> graphics;
     AxeCoordinates horizontalAxe;
     AxeCoordinates verticalAxe;
     QString expression;

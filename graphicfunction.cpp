@@ -38,16 +38,6 @@ void GraphicFunction::calculatePoints(Parser expression)
     // points.insert(points.begin(), pointsNegativeX[1]);
 }
 
-int GraphicFunction::getIdRow() const
-{
-    return idRowTable;
-}
-
-void GraphicFunction::setIdRow(int value)
-{
-    idRowTable = value;
-}
-
 QColor GraphicFunction::getColor() const
 {
     return color;

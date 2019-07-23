@@ -10,7 +10,7 @@ Graphs::Graphs(QWidget *parent) :
     QWidget(parent),
     horizontalAxe(Orientation::horizontal),
     verticalAxe(Orientation::vertical)
-{
+{    
 }
 
 void Graphs::getUserInputExpression(const QString& inputExpression)
@@ -78,45 +78,46 @@ void Graphs::setInputExpression(QTableWidgetItem* currentCell)
 {
     if (currentCell->column() == 1)
     {
-        //проверка валидности выражения
-        Validator checker;
-        int pos = 0;
-        QString expression = currentCell->text();
-        QValidator::State stateValidate = checker.validate(expression, pos);
-
         QTableWidget* tableWidget = qobject_cast<QTableWidget*> (sender());
-        int numRows = tableWidget->rowCount();
+        QString newExpression = currentCell->text();
+        int totalRows = tableWidget->rowCount();
+        int currentRow = currentCell->row();
+        int idRow = currentCell->data(Qt::UserRole).toInt();
 
-        if(currentCell->row() == numRows-1 && !currentCell->text().isEmpty())
+        // если текущая строка - последняя строчка таблицы и не пустая то создаем новый график функции
+        if(currentRow == totalRows-1 && !currentCell->text().isEmpty())
         {
-            expressions.insert(currentCell->row()-1, expression);
-            auto graphic = QSharedPointer<GraphicFunction>::create();
-            graphic->setInputUserExpression(expression);
-            graphic->setColor(getColor(currentCell->row()));
-            graphicsMap.insert(expression, graphic);
+            GraphicData graphicData;
+            graphicData.numRow = currentRow;
+            graphicData.expression = newExpression;
+            graphicData.graphicFunction.setInputUserExpression(newExpression);
+            graphicData.graphicFunction.setColor(getColor(idRow));
+            graphics.insert(idRow, graphicData);
+
+            // создаем после этой строки пустую строку в таблице
             emit insertNewRow();
         }
-        else
+        // или редактируем старое выражение
+        else if (graphics.contains(idRow))
         {
-            QString prevExpression = expressions[currentCell->row()-1];
-            if (prevExpression != expression)
+            auto& currentGraphic = graphics[idRow];
+            QString oldExpression = currentGraphic.expression;
+
+            if (oldExpression != newExpression)
             {
-                auto prevGraphicQShared = graphicsMap.take(prevExpression);
-                GraphicFunction prevGraphic = *prevGraphicQShared.get();
-                prevGraphic.setInputUserExpression(expression);
-                QSharedPointer<GraphicFunction> graph (&prevGraphic);
-                graphicsMap.insert(expression, graph);
-                expressions.insert(currentCell->row(), expression);
+                currentGraphic.graphicFunction.setInputUserExpression(newExpression);
+                currentGraphic.expression = newExpression;
             }
         }
 
     }
+
     update();
 }
 
-void Graphs::deleteGraphic(QString expression)
+void Graphs::deleteGraphic(int idRow)
 {
-    graphicsMap.remove(expression);
+    graphics.remove(idRow);
     update();
 }
 
@@ -131,11 +132,11 @@ void Graphs::moveCenter(QPainter &painter)
 
 void Graphs::recountPointsGraphics()
 {
-    for (auto graphic : graphicsMap)
+    for (auto& graphic : graphics)
     {
-        if (!graphic->getInputUserExpression().isEmpty())
+        if (!graphic.graphicFunction.getInputUserExpression().isEmpty())
         {
-            graphic->scale(scaleGraphicX, scaleGraphicY);
+            graphic.graphicFunction.scale(scaleGraphicX, scaleGraphicY);
         }
     }
 }
@@ -154,14 +155,14 @@ void Graphs::paintEvent(QPaintEvent* event)
     horizontalAxe.draw(painter, width()/2 + abs(movingX) + abs(movingY), intervalGridY);
     verticalAxe.draw(painter, height()/2 + abs(movingY) + abs(movingX), intervalGridX);
 
-    if(!graphicsMap.empty())
+    if(!graphics.empty())
     {
         recountPointsGraphics();
-        for (const auto graphic : graphicsMap)
+        for (auto& graphic : graphics)
         {
-            if (!graphic->getInputUserExpression().isEmpty())
+            if (!graphic.graphicFunction.getInputUserExpression().isEmpty())
             {
-                graphic->draw(painter);
+                graphic.graphicFunction.draw(painter);
             }
         }
     }
