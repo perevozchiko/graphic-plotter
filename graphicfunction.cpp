@@ -8,16 +8,16 @@ GraphicFunction::GraphicFunction()
 
 }
 
-void GraphicFunction::calculatePoints(Parser expression)
+void GraphicFunction::calculatePoints()
 {
     double valueX = 0;
     double valueY = 0;
 
     points.clear();
-    for (int i = 0; i < numberOfPoints; i++)
+    for (int i = 0; i < numberOfPointsDefault; i++)
     {
-        valueX = (i - numberOfPoints/2) * step; // точки от -numberOfPoints/2 до (numberOfPoints/2)
-        valueY = expression.calculate(valueX);
+        valueX = (i - numberOfPointsDefault/2) * stepDefault; // точки от -numberOfPoints/2 до (numberOfPoints/2)
+        valueY = expressionPolish.calculate(valueX);
 
         //Решить проблему с плюс и минус бесконечность, при увел. массштаба минус бесконечность превращается в ноль
         if (std::isinf(valueY))
@@ -56,10 +56,9 @@ QString GraphicFunction::getInputUserExpression() const
 void GraphicFunction::setInputUserExpression(const QString& value)
 {
     inputUserExpression = value;
-    Parser expression(inputUserExpression);
-
-    expression.convertToPolishExpression();
-    calculatePoints(expression);
+    expressionPolish.setUserInputExpression(inputUserExpression);
+    expressionPolish.convertToPolishExpression();
+    calculatePoints();
 
     lastScaleRatioX = 1;
     lastScaleRatioY = 1;
@@ -68,7 +67,7 @@ void GraphicFunction::setInputUserExpression(const QString& value)
 
 void GraphicFunction::scale(const double ratioX, const double ratioY)
 {
-    for (int i = 0; i < numberOfPoints; i++)
+    for (int i = 0; i < numberOfPointsDefault; i++)
     {
         points[i].setX(points[i].x() * ratioX / lastScaleRatioX);
         points[i].setY(points[i].y() * ratioY / lastScaleRatioY);
@@ -143,7 +142,10 @@ void GraphicFunction::draw(QPainter &painter)
         {
             pathAfterGap.cubicTo(c1, c2, points.at(j + 2));
         }
+        painter.setPen(QPen(Qt::blue, 8, Qt::SolidLine, Qt::RoundCap));
+        painter.drawPoint(points.at(j));
     }
+    painter.setPen(QPen(Qt::red, 1, Qt::SolidLine, Qt::RoundCap));
     painter.drawPath(path);
     if (gap)
     {

@@ -10,11 +10,14 @@
 class Parser
 {
 public:
+    Parser();
     Parser(const QString& _userInputExpression);
     void convertToPolishExpression();
     double calculate(double valueX);
 
     QString getExpressionPolishNotation() const;
+
+    void setUserInputExpression(const QString& value);
 
 private:
     QString userInputExpression;

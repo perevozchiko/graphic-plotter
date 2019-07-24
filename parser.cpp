@@ -1,6 +1,11 @@
 #include "parser.h"
 
 
+Parser::Parser()
+{
+
+}
+
 Parser::Parser(const QString& _userInputExpression) :
     userInputExpression(_userInputExpression)
 {
@@ -230,6 +235,11 @@ double Parser::calculate(double valueX)
 QString Parser::getExpressionPolishNotation() const
 {
     return expressionPolishNotation;
+}
+
+void Parser::setUserInputExpression(const QString& value)
+{
+    userInputExpression = value;
 }
 
 int Parser::getPriorityOperator(QChar symbol)

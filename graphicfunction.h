@@ -29,12 +29,14 @@ public:
     void setInputUserExpression(const QString& value);
 
 private:
+    Parser expressionPolish;
     QString inputUserExpression;
     QVector<QPointF> points;
     double lastScaleRatioX{1};
     double lastScaleRatioY{1};
-    void calculatePoints(Parser expression);
+    void calculatePoints();
     QColor color{Qt::black};
+    double step{stepDefault};
 };
 
 #endif // GRAPHICFUNCTION_H
