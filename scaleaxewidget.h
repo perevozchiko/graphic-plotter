@@ -36,7 +36,7 @@ private:
     int movingX{0};
     int movingY{0};
     QPoint deltaMoving;
-
+    MaxValues maxValues;
     void drawNotch(QPainter& painter);
     void drawVerticalNotch(QPainter& painter);
     void drawHorizontalNotch(QPainter& painter);

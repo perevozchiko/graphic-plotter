@@ -9,7 +9,14 @@ enum class Orientation
     horizontal
 };
 
-namespace {
+// максимальные значения в окне графика
+struct MaxValues
+{
+    double valueY{1};
+    double valueX{1};
+    double negativeValueY{-1};
+    double negativeValueX{-1};
+};
 
 // main
 const QSize sizeMainWindow(1200, 700);
@@ -48,6 +55,5 @@ const double infinity = std::numeric_limits<int>::max();
 const int defaultScaleGraphic = 50;
 const double stepDefault = 1;
 
-}
 
 #endif // SETTINGS_H

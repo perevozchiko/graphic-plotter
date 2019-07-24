@@ -90,13 +90,22 @@ void ScaleAxeWidget::drawVerticalNotch(QPainter& painter)
     for (int i = -numNotch+1; i < numNotch; i++)
     {
         QString numberString;
-        numberString = QString::number(round(-i * currentScaleCoordinate * 1000)/1000);
+        int num = round(-i * currentScaleCoordinate * 1000)/1000;
+        numberString = QString::number(num);
 
         painter.drawLine(QPointF(0, i * currentIntervalNotch),
                          QPointF(lengthRisks, i * currentIntervalNotch));
 
         int yValue = static_cast<int>(i * currentIntervalNotch + fontMetrics.height()/2); // центрирование значение координаты относительно риски
         painter.drawText(15, yValue, numberString);
+        if (i == numNotch-1)
+        {
+            maxValues.valueY = num;
+        }
+        if (i == -numNotch+1)
+        {
+            maxValues.negativeValueY = num;
+        }
     }
 }
 
@@ -106,13 +115,22 @@ void ScaleAxeWidget::drawHorizontalNotch(QPainter& painter)
     for (int i = -numNotch+1; i < numNotch; i++)
     {
         QString numberString;
-        numberString = QString::number(round(i * currentScaleCoordinate * 100)/100);
+        int num = round(i * currentScaleCoordinate * 100)/100;
+        numberString = QString::number(num);
 
         painter.drawLine(QPointF(i * currentIntervalNotch, 0),
                          QPointF((i * currentIntervalNotch), lengthRisks));
 
         int xValue = static_cast<int>(i * currentIntervalNotch - fontMetrics.width(numberString)/2); // центрирование значение координаты относительно риски
         painter.drawText(xValue, 20, numberString);
+        if (i == numNotch-1)
+        {
+            maxValues.valueX = num;
+        }
+        if (i == -numNotch+1)
+        {
+            maxValues.negativeValueX = num;
+        }
     }
 }
 

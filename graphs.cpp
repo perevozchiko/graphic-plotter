@@ -109,7 +109,6 @@ void Graphs::setInputExpression(QTableWidgetItem* currentCell)
                 currentGraphic.expression = newExpression;
             }
         }
-
     }
 
     update();
