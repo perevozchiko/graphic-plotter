@@ -120,6 +120,22 @@ void Graphs::deleteGraphic(int idRow)
     update();
 }
 
+void Graphs::reCalcPointGraphic()
+{
+    for (auto& graphic : graphics)
+    {
+        if (!graphic.graphicFunction.getInputUserExpression().isEmpty())
+        {
+            graphic.graphicFunction.calculatePoints();
+        }
+    }
+//    qDebug() << ScaleAxeWidget::maxValues.negativeValueX << ", " << ScaleAxeWidget::maxValues.pozitiveValueX;
+//    qDebug() << ScaleAxeWidget::maxValues.negativeValueY << ", " << ScaleAxeWidget::maxValues.pozitiveValueY;
+//    qDebug() << "\n";
+    update();
+
+}
+
 void Graphs::moveCenter(QPainter &painter)
 {
     movingX += deltaMoving.x();

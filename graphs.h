@@ -44,6 +44,7 @@ public slots:
     void setDefaultScaleX();
     void setInputExpression(QTableWidgetItem* currentCell);
     void deleteGraphic(int idRow);
+    void reCalcPointGraphic();
 
 private:
     QMap <int, GraphicData> graphics;

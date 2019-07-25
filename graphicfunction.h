@@ -12,6 +12,9 @@
 #include "parser.h"
 #include "settings.h"
 #include "QPolygon"
+#include "scaleaxewidget.h"
+
+class ScaleAxeWidget;
 
 class GraphicFunction
 {
@@ -27,6 +30,7 @@ public:
 
     QString getInputUserExpression() const;
     void setInputUserExpression(const QString& value);
+    void calculatePoints();
 
 private:
     Parser expressionPolish;
@@ -34,9 +38,9 @@ private:
     QVector<QPointF> points;
     double lastScaleRatioX{1};
     double lastScaleRatioY{1};
-    void calculatePoints();
+    double factorX;
+    double factorY;
     QColor color{Qt::black};
-    double step{stepDefault};
 };
 
 #endif // GRAPHICFUNCTION_H

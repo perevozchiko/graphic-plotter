@@ -12,28 +12,18 @@ void GraphicFunction::calculatePoints()
 {
     double valueX = 0;
     double valueY = 0;
-
+    double stepX = qAbs(ScaleAxeWidget::maxValues.negativeValueX) + qAbs(ScaleAxeWidget::maxValues.pozitiveValueX);
+    double stepY = qAbs(ScaleAxeWidget::maxValues.negativeValueY) + qAbs(ScaleAxeWidget::maxValues.pozitiveValueY);
+    double stepMinimal = 3 * stepX/numberOfPointsDefault;
     points.clear();
-    for (int i = 0; i < numberOfPointsDefault; i++)
+   // qDebug() << stepMinimal << ", " << lastScaleRatioX << ", " << lastScaleRatioY;
+
+    for (int i = 0; i <= numberOfPointsDefault; i++)
     {
-        valueX = (i - numberOfPointsDefault/2) * stepDefault; // точки от -numberOfPoints/2 до (numberOfPoints/2)
+        valueX = (i - numberOfPointsDefault/2) * stepMinimal; // точки от -numberOfPoints/2 до (numberOfPoints/2)
         valueY = expressionPolish.calculate(valueX);
 
-        //Решить проблему с плюс и минус бесконечность, при увел. массштаба минус бесконечность превращается в ноль
-        if (std::isinf(valueY))
-        {/*
-            if (valueY > 0)
-            {
-                valueY =  2e9;
-            }
-            else
-            {
-                valueY =  -2e9;
-            }*/
-            //points.push_back(QPointF(valueX, -valueY));
-        }
-
-        points.push_back(QPointF(valueX, valueY));
+        points.push_back(QPointF(valueX * lastScaleRatioX, valueY * lastScaleRatioY));
     }
     // points.insert(points.begin(), pointsNegativeX[1]);
 }
@@ -67,11 +57,16 @@ void GraphicFunction::setInputUserExpression(const QString& value)
 
 void GraphicFunction::scale(const double ratioX, const double ratioY)
 {
-    for (int i = 0; i < numberOfPointsDefault; i++)
+    factorX = ratioX / lastScaleRatioX;
+    factorY = ratioY / lastScaleRatioY;
+
+    for (int i = 0; i <= points.count()-1; i++)
     {
-        points[i].setX(points[i].x() * ratioX / lastScaleRatioX);
-        points[i].setY(points[i].y() * ratioY / lastScaleRatioY);
+        points[i].setX(points[i].x() * factorX);
+        points[i].setY(points[i].y() * factorY);
     }
+    //qDebug() << ratioX/lastScaleRatioX << ", " << ratioY / lastScaleRatioY;
+
     lastScaleRatioX = ratioX;
     lastScaleRatioY = ratioY;
 }
@@ -143,7 +138,7 @@ void GraphicFunction::draw(QPainter &painter)
             pathAfterGap.cubicTo(c1, c2, points.at(j + 2));
         }
         painter.setPen(QPen(Qt::blue, 8, Qt::SolidLine, Qt::RoundCap));
-        painter.drawPoint(points.at(j));
+        painter.drawPoint(points.at(j+1));
     }
     painter.setPen(QPen(Qt::red, 1, Qt::SolidLine, Qt::RoundCap));
     painter.drawPath(path);

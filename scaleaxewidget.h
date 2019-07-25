@@ -18,7 +18,7 @@ signals:
     void scaleGraphicX(double value);
     void setDefaultScaleY();
     void setDefaultScaleX();
-    void changeStepGraphic(MaxValues values);
+    void changeStepGraphic();
 
 public slots:
     void scaleGraphicWithWheels(double value);

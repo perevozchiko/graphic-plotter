@@ -68,13 +68,13 @@ void ScaleAxeWidget::drawNotch(QPainter &painter)
     {
         currentIntervalNotch /= 2;
         currentScaleCoordinate /= 2;
-        emit changeStepGraphic(maxValues);
+        emit changeStepGraphic();
     }
     if (currentIntervalNotch < intervalForDisappearNotch && currentScaleCoordinate < maxScaleCoordinate)
     {
         currentIntervalNotch *= 2;
         currentScaleCoordinate *= 2;
-        emit changeStepGraphic(maxValues);
+        emit changeStepGraphic();
     }
 
     if (orientation == Orientation::vertical)

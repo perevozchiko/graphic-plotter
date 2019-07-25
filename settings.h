@@ -12,10 +12,10 @@ enum class Orientation
 // максимальные значения в окне графика
 struct MaxValues
 {
-    double negativeValueY{-1};
-    double pozitiveValueY {1};
-    double negativeValueX{-1};
-    double pozitiveValueX{1};
+    double negativeValueY{-10};
+    double pozitiveValueY {10};
+    double negativeValueX{-10};
+    double pozitiveValueX{10};
 };
 
 // main
@@ -34,7 +34,7 @@ const double widthPenGrid = 0.5;
 
 // ScaleAxeWidget
 const int heightFontMarks = 10;
-const QString familyFont = "Arial";
+const QString familyFont = "Consolas";
 const double widthPenBorderScaleWidget = 1;
 const int lengthRisks = 7;
 const int defaultInterval = 50;//??? возможно не будет использоваться
@@ -49,7 +49,7 @@ const double minCoordinate = 0.01;
 const double widthPenBorderGraphWidget = 1.5;
 
 // GraphicFunction
-const int numberOfPointsDefault = 20;
+const int numberOfPointsDefault = 41;
 const double widthPenGraphic = 2.5;
 const double infinity = std::numeric_limits<int>::max();
 const int defaultScaleGraphic = 50;
