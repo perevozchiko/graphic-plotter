@@ -12,10 +12,10 @@ enum class Orientation
 // максимальные значения в окне графика
 struct MaxValues
 {
-    double valueY{1};
-    double valueX{1};
     double negativeValueY{-1};
+    double pozitiveValueY {1};
     double negativeValueX{-1};
+    double pozitiveValueX{1};
 };
 
 // main

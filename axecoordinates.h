@@ -3,7 +3,7 @@
 
 #include <QPainter>
 #include "settings.h"
-#include "scaleaxewidget.h"
+//#include "scaleaxewidget.h"
 
 class AxeCoordinates
 {

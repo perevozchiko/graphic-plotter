@@ -9,6 +9,7 @@ class ScaleAxeWidget : public QWidget
     Q_OBJECT
 public:
     explicit ScaleAxeWidget(QWidget *parent = nullptr);
+    static MaxValues maxValues;
 
 signals:
     void moveUp(double value);
@@ -17,6 +18,7 @@ signals:
     void scaleGraphicX(double value);
     void setDefaultScaleY();
     void setDefaultScaleX();
+    void changeStepGraphic(MaxValues values);
 
 public slots:
     void scaleGraphicWithWheels(double value);
@@ -24,6 +26,7 @@ public slots:
     void setMovingCenter(QPoint movingPoint);
 
 private:
+
     Orientation orientation;
     int widthArea{0};
     int heightArea{0};
@@ -36,7 +39,6 @@ private:
     int movingX{0};
     int movingY{0};
     QPoint deltaMoving;
-    MaxValues maxValues;
     void drawNotch(QPainter& painter);
     void drawVerticalNotch(QPainter& painter);
     void drawHorizontalNotch(QPainter& painter);

@@ -8,6 +8,8 @@
 #include "scaleaxewidget.h"
 #include "settings.h"
 
+MaxValues ScaleAxeWidget::maxValues;
+
 ScaleAxeWidget::ScaleAxeWidget(QWidget *parent) :
     QWidget(parent),
     font(QFont(familyFont, heightFontMarks)),
@@ -66,11 +68,13 @@ void ScaleAxeWidget::drawNotch(QPainter &painter)
     {
         currentIntervalNotch /= 2;
         currentScaleCoordinate /= 2;
+        emit changeStepGraphic(maxValues);
     }
     if (currentIntervalNotch < intervalForDisappearNotch && currentScaleCoordinate < maxScaleCoordinate)
     {
         currentIntervalNotch *= 2;
         currentScaleCoordinate *= 2;
+        emit changeStepGraphic(maxValues);
     }
 
     if (orientation == Orientation::vertical)
@@ -87,10 +91,10 @@ void ScaleAxeWidget::drawNotch(QPainter &painter)
 void ScaleAxeWidget::drawVerticalNotch(QPainter& painter)
 {
     int numNotch = static_cast<int>(ceil((height()/2 + qAbs(movingY))/currentIntervalNotch));
-    for (int i = -numNotch+1; i < numNotch; i++)
+    for (int i = -numNotch; i < numNotch; i++)
     {
         QString numberString;
-        int num = round(-i * currentScaleCoordinate * 1000)/1000;
+        double num = round(-i * currentScaleCoordinate * 1000)/1000;
         numberString = QString::number(num);
 
         painter.drawLine(QPointF(0, i * currentIntervalNotch),
@@ -98,13 +102,14 @@ void ScaleAxeWidget::drawVerticalNotch(QPainter& painter)
 
         int yValue = static_cast<int>(i * currentIntervalNotch + fontMetrics.height()/2); // центрирование значение координаты относительно риски
         painter.drawText(15, yValue, numberString);
+
         if (i == numNotch-1)
         {
-            maxValues.valueY = num;
-        }
-        if (i == -numNotch+1)
-        {
             maxValues.negativeValueY = num;
+        }
+        if (i == -numNotch)
+        {
+            maxValues.pozitiveValueY = num;
         }
     }
 }
@@ -112,10 +117,10 @@ void ScaleAxeWidget::drawVerticalNotch(QPainter& painter)
 void ScaleAxeWidget::drawHorizontalNotch(QPainter& painter)
 {
     int numNotch = static_cast<int>(ceil((width()/2 + qAbs(movingX))/currentIntervalNotch));
-    for (int i = -numNotch+1; i < numNotch; i++)
+    for (int i = -numNotch; i < numNotch; i++)
     {
         QString numberString;
-        int num = round(i * currentScaleCoordinate * 100)/100;
+        double num = round(i * currentScaleCoordinate * 100)/100;
         numberString = QString::number(num);
 
         painter.drawLine(QPointF(i * currentIntervalNotch, 0),
@@ -125,9 +130,9 @@ void ScaleAxeWidget::drawHorizontalNotch(QPainter& painter)
         painter.drawText(xValue, 20, numberString);
         if (i == numNotch-1)
         {
-            maxValues.valueX = num;
+            maxValues.pozitiveValueX = num;
         }
-        if (i == -numNotch+1)
+        if (i == -numNotch)
         {
             maxValues.negativeValueX = num;
         }

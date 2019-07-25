@@ -3,8 +3,6 @@
 #include <QApplication>
 #include "graphs.h"
 #include <QTranslator>
-#include "scaleaxewidget.h"
-#include "settings.h"
 #include "mainwindow.h"
 
 
