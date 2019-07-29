@@ -29,7 +29,7 @@ public:
     void setColor(const QColor& value);
 
     QString getInputUserExpression() const;
-    void setInputUserExpression(const QString& value);
+    void setInputUserExpression(const QString value);
     void calculatePoints();
 
 private:

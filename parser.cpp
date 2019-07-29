@@ -9,7 +9,7 @@ Parser::Parser()
 Parser::Parser(const QString& _userInputExpression) :
     userInputExpression(_userInputExpression)
 {
-    userInputExpression.remove(' ');
+
 }
 
 void Parser::addDigitToExpression(size_t currentPosition, QChar symbol)
@@ -107,6 +107,8 @@ void Parser::addOperatorsFromStackToExpression()
 
 void Parser::convertToPolishExpression()
 {
+    userInputExpression.remove(' ');
+    expressionPolishNotation.clear();
     int size = userInputExpression.size();
 
     for (int currentPosition = 0; currentPosition < size; ++currentPosition)
@@ -237,7 +239,7 @@ QString Parser::getExpressionPolishNotation() const
     return expressionPolishNotation;
 }
 
-void Parser::setUserInputExpression(const QString& value)
+void Parser::setUserInputExpression(const QString value)
 {
     userInputExpression = value;
 }

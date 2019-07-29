@@ -17,7 +17,7 @@ public:
 
     QString getExpressionPolishNotation() const;
 
-    void setUserInputExpression(const QString& value);
+    void setUserInputExpression(const QString value);
 
 private:
     QString userInputExpression;

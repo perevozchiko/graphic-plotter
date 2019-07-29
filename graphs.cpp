@@ -219,6 +219,7 @@ void Graphs::mouseMoveEvent(QMouseEvent* event)
         lastMousePosX = event->x();
         lastMousePosY = -event->y();
         emit moveCenterCoordinate(deltaMoving);
+        reCalcPointGraphic();
         event->accept();
         update();
     }

@@ -12,15 +12,17 @@ void GraphicFunction::calculatePoints()
 {
     double valueX = 0;
     double valueY = 0;
-    double stepX = qAbs(ScaleAxeWidget::maxValues.negativeValueX) + qAbs(ScaleAxeWidget::maxValues.pozitiveValueX);
-    double stepY = qAbs(ScaleAxeWidget::maxValues.negativeValueY) + qAbs(ScaleAxeWidget::maxValues.pozitiveValueY);
+    double stepX = qAbs(ScaleAxeWidget::maxValues.negativeValueX - ScaleAxeWidget::maxValues.pozitiveValueX);
+    //double stepY = qAbs(ScaleAxeWidget::maxValues.negativeValueY - ScaleAxeWidget::maxValues.pozitiveValueY);
     double stepMinimal = 3 * stepX/numberOfPointsDefault;
     points.clear();
-   // qDebug() << stepMinimal << ", " << lastScaleRatioX << ", " << lastScaleRatioY;
+    // qDebug() << stepMinimal << ", " << lastScaleRatioX << ", " << lastScaleRatioY;
 
     for (int i = 0; i <= numberOfPointsDefault; i++)
     {
-        valueX = (i - numberOfPointsDefault/2) * stepMinimal; // точки от -numberOfPoints/2 до (numberOfPoints/2)
+        valueX = (i - numberOfPointsDefault/2);
+
+        valueX *= stepMinimal; // точки от -numberOfPoints/2 до (numberOfPoints/2)
         valueY = expressionPolish.calculate(valueX);
 
         points.push_back(QPointF(valueX * lastScaleRatioX, valueY * lastScaleRatioY));
@@ -43,16 +45,15 @@ QString GraphicFunction::getInputUserExpression() const
     return inputUserExpression;
 }
 
-void GraphicFunction::setInputUserExpression(const QString& value)
+void GraphicFunction::setInputUserExpression(const QString value)
 {
     inputUserExpression = value;
     expressionPolish.setUserInputExpression(inputUserExpression);
     expressionPolish.convertToPolishExpression();
     calculatePoints();
 
-    lastScaleRatioX = 1;
-    lastScaleRatioY = 1;
-
+//    lastScaleRatioX = 1;
+//    lastScaleRatioY = 1;
 }
 
 void GraphicFunction::scale(const double ratioX, const double ratioY)
@@ -126,27 +127,31 @@ void GraphicFunction::draw(QPainter &painter)
         if (j && std::isinf(points.at(j).y()))
         {
             gap = true;
-            pathAfterGap.moveTo(points.at(j+1).x(), points.at(j+1).y());
+            pathAfterGap.moveTo(0, 2e9);
+            path.cubicTo(c1, c2, QPoint(0, -2e9));
         }
 
         if (!gap)
         {
+
             path.cubicTo(c1, c2, points.at(j + 2));
         }
         else
         {
             pathAfterGap.cubicTo(c1, c2, points.at(j + 2));
         }
-        painter.setPen(QPen(Qt::blue, 8, Qt::SolidLine, Qt::RoundCap));
-        painter.drawPoint(points.at(j+1));
+       // painter.setPen(QPen(Qt::blue, 8, Qt::SolidLine, Qt::RoundCap));
+       // painter.drawPoint(points.at(j+1));
     }
-    painter.setPen(QPen(Qt::red, 1, Qt::SolidLine, Qt::RoundCap));
-    painter.drawPath(path);
+    //painter.setPen(QPen(Qt::red, 1, Qt::SolidLine, Qt::RoundCap));
     if (gap)
     {
         painter.drawPath(pathAfterGap);
     }
+    painter.drawPath(path);
+    painter.setClipRect(100, 100, 300, 300);
     painter.restore();
+   // painter.clipBoundingRect();
 }
 
 
