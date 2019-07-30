@@ -14,7 +14,8 @@ void GraphicFunction::calculatePoints()
     double valueY = 0;
     double stepX = qAbs(ScaleAxeWidget::maxValues.negativeValueX) + qAbs(ScaleAxeWidget::maxValues.pozitiveValueX);
     double stepY = qAbs(ScaleAxeWidget::maxValues.negativeValueY) + qAbs(ScaleAxeWidget::maxValues.pozitiveValueY);
-    double stepMinimal = 3 * stepX/numberOfPointsDefault;
+    //double stepMinimal = 2 * stepX/numberOfPointsDefault;
+    double stepMinimal = 0.1;
     points.clear();
 
 
@@ -26,7 +27,13 @@ void GraphicFunction::calculatePoints()
         valueY = expressionPolish.calculate(valueX);
 
         points.push_back(QPointF(valueX * lastScaleRatioX, valueY * lastScaleRatioY));
+
+        if (qAbs(valueY/2) > qAbs(ScaleAxeWidget::maxValues.pozitiveValueY))
+        {
+            break;
+        }
     }
+    createBezierPoints();
 }
 
 QColor GraphicFunction::getColor() const
@@ -113,6 +120,19 @@ void calcBezierPoints(const QPointF& src1, const QPointF& src2, const QPointF& s
 
 
 
+void GraphicFunction::createBezierPoints()
+{
+    bezierPoints.clear();
+    for (int j = 0; j < points.count() - 3; j++)
+    {
+        QPointF c1;
+        QPointF c2;
+        calcBezierPoints(points.at(j), points.at(j + 1), points.at(j + 2), points.at(j + 3), c1, c2);
+        BezierPoint p(c1, c2, points.at(j+2));
+        bezierPoints.push_back(p);
+    }
+}
+
 void GraphicFunction::draw(QPainter &painter)
 {
     painter.save();
@@ -121,31 +141,13 @@ void GraphicFunction::draw(QPainter &painter)
 
     QPainterPath path;
     QPainterPath pathAfterGap;
-    bool isGap = false;
-
-    if (bezierPoints.empty())
-    {
-        for (int j = 0; j < points.count() - 3; j++)
-        {
-            QPointF c1;
-            QPointF c2;
-            calcBezierPoints(points.at(j), points.at(j + 1), points.at(j + 2), points.at(j + 3), c1, c2);
-            BezierPoint p(c1, c2, points.at(j+2));
-            bezierPoints.push_back(p);
-        }
-    }
 
     path.moveTo(bezierPoints[0].point);
+
     for (size_t k = 0; k < bezierPoints.size(); k++)
     {
-        if (!isGap)
-        {
-            path.cubicTo(bezierPoints.at(k).cp1, bezierPoints.at(k).cp2, bezierPoints.at(k).point);
-        }
-        else
-        {
-            pathAfterGap.cubicTo(bezierPoints.at(k).cp1, bezierPoints.at(k).cp2, bezierPoints.at(k).point);;
-        }
+        path.cubicTo(bezierPoints.at(k).cp1, bezierPoints.at(k).cp2, bezierPoints.at(k).point);
+
         painter.setPen(QPen(Qt::blue, 8, Qt::SolidLine, Qt::RoundCap));
         painter.drawPoint(bezierPoints.at(k).point);;
     }
@@ -153,10 +155,6 @@ void GraphicFunction::draw(QPainter &painter)
     painter.setPen(QPen(Qt::red, 1, Qt::SolidLine, Qt::RoundCap));
 
     painter.drawPath(path);
-    if (isGap)
-    {
-        painter.drawPath(pathAfterGap);
-    }
     painter.restore();
 }
 

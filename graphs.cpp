@@ -196,6 +196,8 @@ void Graphs::mouseDoubleClickEvent(QMouseEvent* event)
     movingX = 0;
     movingY = 0;
     deltaMoving = QPoint(0, 0);
+    reCalcPointsGraphic();
+    event->accept();
     update();
 }
 

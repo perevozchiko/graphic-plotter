@@ -50,6 +50,7 @@ private:
     Parser expressionPolish;
     QString inputUserExpression;
     QVector<QPointF> points;
+    //QStack<QPointF> points;
     double lastScaleRatioX{1};
     double lastScaleRatioY{1};
     double factorX;
@@ -57,6 +58,7 @@ private:
     QColor color{Qt::black};
 
     std::vector<BezierPoint> bezierPoints;
+    void createBezierPoints();
 };
 
 #endif // GRAPHICFUNCTION_H
