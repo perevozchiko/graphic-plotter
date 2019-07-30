@@ -22,7 +22,7 @@ public:
     {
         int numRow{0};
         QString expression;
-        GraphicFunction graphicFunction;
+        GraphicFunction function;
     };
 
 signals:
@@ -44,15 +44,15 @@ public slots:
     void setDefaultScaleX();
     void setInputExpression(QTableWidgetItem* currentCell);
     void deleteGraphic(int idRow);
-    void reCalcPointGraphic();
+    void reCalcPointsGraphic();
 
 private:
     QMap <int, GraphicData> graphics;
     AxeCoordinates horizontalAxe;
     AxeCoordinates verticalAxe;
     QString expression;
-    double scaleGraphicY{50};
-    double scaleGraphicX{50};
+    double scaleGraphicY{defaultInterval};
+    double scaleGraphicX{defaultInterval};
     double intervalGridY{defaultInterval};
     double intervalGridX{defaultInterval};
     QPoint deltaMoving;
@@ -63,15 +63,13 @@ private:
 
     void moveCenter(QPainter& painter);
     void setMovingCoordinate(QPoint point);
-    void recountPointsGraphics();
+    void reCalcScaleGraphics();
 
 protected:
     void paintEvent(QPaintEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
     void mouseDoubleClickEvent(QMouseEvent* event) override;
-
     void mousePressEvent(QMouseEvent* event) override;
-
     void mouseMoveEvent(QMouseEvent* event) override;
 };
 

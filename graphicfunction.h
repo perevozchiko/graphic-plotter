@@ -16,10 +16,24 @@
 
 class ScaleAxeWidget;
 
+
 class GraphicFunction
 {
 public:
     GraphicFunction();
+
+    struct BezierPoint
+    {
+        BezierPoint();
+        BezierPoint(QPointF _cp1, QPointF _cp2, QPointF _point) :
+            cp1{_cp1},
+            cp2{_cp2},
+            point{_point}
+        {}
+        QPointF cp1;
+        QPointF cp2;
+        QPointF point;
+    };
 
     void draw(QPainter& painter);
 
@@ -41,6 +55,8 @@ private:
     double factorX;
     double factorY;
     QColor color{Qt::black};
+
+    std::vector<BezierPoint> bezierPoints;
 };
 
 #endif // GRAPHICFUNCTION_H

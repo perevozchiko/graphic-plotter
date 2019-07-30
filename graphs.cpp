@@ -46,13 +46,13 @@ void Graphs::zoomOutGridX(double intervalNotch)
 void Graphs::zoomGraphicY(double intervalCoordinate)
 {
     scaleGraphicY = intervalGridY / intervalCoordinate;
-    recountPointsGraphics();
+    reCalcScaleGraphics();
 }
 
 void Graphs::zoomGraphicX(double intervalCoordinate)
 {
     scaleGraphicX = intervalGridX / intervalCoordinate;
-    recountPointsGraphics();
+    reCalcScaleGraphics();
 }
 
 
@@ -60,7 +60,7 @@ void Graphs::setDefaultScaleY()
 {
     intervalGridY = defaultInterval;
     scaleGraphicY = defaultScaleGraphic;
-    recountPointsGraphics();
+    reCalcScaleGraphics();
     movingY = 0;
     update();
 }
@@ -69,7 +69,7 @@ void Graphs::setDefaultScaleX()
 {
     intervalGridX = defaultInterval;
     scaleGraphicX = defaultScaleGraphic;
-    recountPointsGraphics();
+    reCalcScaleGraphics();
     movingX = 0;
     update();
 }
@@ -90,8 +90,8 @@ void Graphs::setInputExpression(QTableWidgetItem* currentCell)
             GraphicData graphicData;
             graphicData.numRow = currentRow;
             graphicData.expression = newExpression;
-            graphicData.graphicFunction.setInputUserExpression(newExpression);
-            graphicData.graphicFunction.setColor(getColor(idRow));
+            graphicData.function.setInputUserExpression(newExpression);
+            graphicData.function.setColor(getColor(idRow));
             graphics.insert(idRow, graphicData);
 
             // создаем после этой строки пустую строку в таблице
@@ -105,7 +105,7 @@ void Graphs::setInputExpression(QTableWidgetItem* currentCell)
 
             if (oldExpression != newExpression)
             {
-                currentGraphic.graphicFunction.setInputUserExpression(newExpression);
+                currentGraphic.function.setInputUserExpression(newExpression);
                 currentGraphic.expression = newExpression;
             }
         }
@@ -120,20 +120,16 @@ void Graphs::deleteGraphic(int idRow)
     update();
 }
 
-void Graphs::reCalcPointGraphic()
+void Graphs::reCalcPointsGraphic()
 {
     for (auto& graphic : graphics)
     {
-        if (!graphic.graphicFunction.getInputUserExpression().isEmpty())
+        if (!graphic.function.getInputUserExpression().isEmpty())
         {
-            graphic.graphicFunction.calculatePoints();
+            graphic.function.calculatePoints();
         }
     }
-//    qDebug() << ScaleAxeWidget::maxValues.negativeValueX << ", " << ScaleAxeWidget::maxValues.pozitiveValueX;
-//    qDebug() << ScaleAxeWidget::maxValues.negativeValueY << ", " << ScaleAxeWidget::maxValues.pozitiveValueY;
-//    qDebug() << "\n";
     update();
-
 }
 
 void Graphs::moveCenter(QPainter &painter)
@@ -145,15 +141,16 @@ void Graphs::moveCenter(QPainter &painter)
     deltaMoving = QPoint(0, 0);
 }
 
-void Graphs::recountPointsGraphics()
+void Graphs::reCalcScaleGraphics()
 {
     for (auto& graphic : graphics)
     {
-        if (!graphic.graphicFunction.getInputUserExpression().isEmpty())
+        if (!graphic.function.getInputUserExpression().isEmpty())
         {
-            graphic.graphicFunction.scale(scaleGraphicX, scaleGraphicY);
+            graphic.function.scale(scaleGraphicX, scaleGraphicY);
         }
     }
+    update();
 }
 
 void Graphs::paintEvent(QPaintEvent* event)
@@ -172,12 +169,12 @@ void Graphs::paintEvent(QPaintEvent* event)
 
     if(!graphics.empty())
     {
-        recountPointsGraphics();
+        reCalcScaleGraphics();
         for (auto& graphic : graphics)
         {
-            if (!graphic.graphicFunction.getInputUserExpression().isEmpty())
+            if (!graphic.function.getInputUserExpression().isEmpty())
             {
-                graphic.graphicFunction.draw(painter);
+                graphic.function.draw(painter);
             }
         }
     }
@@ -219,7 +216,7 @@ void Graphs::mouseMoveEvent(QMouseEvent* event)
         lastMousePosX = event->x();
         lastMousePosY = -event->y();
         emit moveCenterCoordinate(deltaMoving);
-        reCalcPointGraphic();
+        reCalcPointsGraphic();
         event->accept();
         update();
     }

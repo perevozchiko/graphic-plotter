@@ -23,8 +23,8 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent)
     connect(scaleHorizontalWidget, &ScaleAxeWidget::moveUp, graphs, &Graphs::zoomInGridX);
     connect(scaleHorizontalWidget, &ScaleAxeWidget::moveDown, graphs, &Graphs::zoomOutGridX);
 
-    connect(scaleVerticalWidget, &ScaleAxeWidget::changeStepGraphic, graphs, &Graphs::reCalcPointGraphic);
-    connect(scaleHorizontalWidget, &ScaleAxeWidget::changeStepGraphic, graphs, &Graphs::reCalcPointGraphic);
+    connect(scaleVerticalWidget, &ScaleAxeWidget::changeStepGraphic, graphs, &Graphs::reCalcPointsGraphic);
+    connect(scaleHorizontalWidget, &ScaleAxeWidget::changeStepGraphic, graphs, &Graphs::reCalcPointsGraphic);
 
     connect(scaleVerticalWidget, &ScaleAxeWidget::scaleGraphicY, graphs, &Graphs::zoomGraphicY);
     connect(scaleHorizontalWidget, &ScaleAxeWidget::scaleGraphicX, graphs, &Graphs::zoomGraphicX);
