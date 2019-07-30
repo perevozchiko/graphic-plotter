@@ -12,8 +12,12 @@ void GraphicFunction::calculatePoints()
 {
     double valueX = 0;
     double valueY = 0;
-    double stepMinimal = 0.2;
+    double stepX = qAbs(ScaleAxeWidget::maxValues.negativeValueX) + qAbs(ScaleAxeWidget::maxValues.pozitiveValueX);
+    double stepY = qAbs(ScaleAxeWidget::maxValues.negativeValueY) + qAbs(ScaleAxeWidget::maxValues.pozitiveValueY);
+    double stepMinimal = 3 * stepX/numberOfPointsDefault;
     points.clear();
+
+
     for (int i = 0; i <= numberOfPointsDefault; i++)
     {
         valueX = (i - numberOfPointsDefault/2);
@@ -21,7 +25,7 @@ void GraphicFunction::calculatePoints()
         valueX *= stepMinimal; // точки от -numberOfPoints/2 до numberOfPoints/2
         valueY = expressionPolish.calculate(valueX);
 
-        points.push_back(QPointF(valueX * lastScaleRatioX * 50, valueY * lastScaleRatioY * 50));
+        points.push_back(QPointF(valueX * lastScaleRatioX, valueY * lastScaleRatioY));
     }
 }
 
@@ -46,8 +50,8 @@ void GraphicFunction::setInputUserExpression(const QString value)
     expressionPolish.setUserInputExpression(inputUserExpression);
     expressionPolish.convertToPolishExpression();
     calculatePoints();
-//    lastScaleRatioX = 1;
-//    lastScaleRatioY = 1;
+    lastScaleRatioX = 1;
+    lastScaleRatioY = 1;
 }
 
 void GraphicFunction::scale(const double ratioX, const double ratioY)
@@ -123,7 +127,8 @@ void GraphicFunction::draw(QPainter &painter)
     {
         for (int j = 0; j < points.count() - 3; j++)
         {
-            QPointF c1, c2;
+            QPointF c1;
+            QPointF c2;
             calcBezierPoints(points.at(j), points.at(j + 1), points.at(j + 2), points.at(j + 3), c1, c2);
             BezierPoint p(c1, c2, points.at(j+2));
             bezierPoints.push_back(p);

@@ -18,7 +18,6 @@ void Graphs::getUserInputExpression(const QString& inputExpression)
     expression = inputExpression; // добавить проверки
 }
 
-
 void Graphs::zoomInGridY(double intervalNotch)
 {
     intervalGridY = intervalNotch;
