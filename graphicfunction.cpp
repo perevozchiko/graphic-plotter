@@ -15,7 +15,7 @@ void GraphicFunction::calculatePoints()
     double stepX = qAbs(ScaleAxeWidget::maxValues.negativeValueX) + qAbs(ScaleAxeWidget::maxValues.pozitiveValueX);
     double stepY = qAbs(ScaleAxeWidget::maxValues.negativeValueY) + qAbs(ScaleAxeWidget::maxValues.pozitiveValueY);
     //double stepMinimal = 2 * stepX/numberOfPointsDefault;
-    double stepMinimal = 0.1;
+    double stepMinimal = 2 * stepY / numberOfPointsDefault;
     points.clear();
 
 
@@ -27,11 +27,6 @@ void GraphicFunction::calculatePoints()
         valueY = expressionPolish.calculate(valueX);
 
         points.push_back(QPointF(valueX * lastScaleRatioX, valueY * lastScaleRatioY));
-
-        if (qAbs(valueY/2) > qAbs(ScaleAxeWidget::maxValues.pozitiveValueY))
-        {
-            break;
-        }
     }
     createBezierPoints();
 }
