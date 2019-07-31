@@ -56,6 +56,7 @@ private:
     double factorX;
     double factorY;
     QColor color{Qt::black};
+    bool isPointInWindow(QPointF point);
 
     std::vector<BezierPoint> bezierPoints;
     void createBezierPoints();

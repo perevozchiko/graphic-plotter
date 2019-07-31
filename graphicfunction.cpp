@@ -12,23 +12,59 @@ void GraphicFunction::calculatePoints()
 {
     double valueX = 0;
     double valueY = 0;
-    double stepX = qAbs(ScaleAxeWidget::maxValues.negativeValueX) + qAbs(ScaleAxeWidget::maxValues.pozitiveValueX);
-    double stepY = qAbs(ScaleAxeWidget::maxValues.negativeValueY) + qAbs(ScaleAxeWidget::maxValues.pozitiveValueY);
-    //double stepMinimal = 2 * stepX/numberOfPointsDefault;
-    double stepMinimal = 2 * stepY / numberOfPointsDefault;
+    double stepX = qAbs(ScaleAxeWidget::maxValues.minX) + qAbs(ScaleAxeWidget::maxValues.maxX);
+    double stepY = qAbs(ScaleAxeWidget::maxValues.minY) + qAbs(ScaleAxeWidget::maxValues.maxY);
+
+    double stepMinimal = 5 * stepX / numberOfPointsDefault;
     points.clear();
 
-
-    for (int i = 0; i <= numberOfPointsDefault; i++)
+    while(true)
     {
-        valueX = (i - numberOfPointsDefault/2);
+        for (int i = 0; i < numberOfPointsDefault; i++)
+        {
+            valueX = (i - numberOfPointsDefault/2);
 
-        valueX *= stepMinimal; // точки от -numberOfPoints/2 до numberOfPoints/2
-        valueY = expressionPolish.calculate(valueX);
+            valueX *= stepMinimal; // точки от -numberOfPoints/2 до numberOfPoints/2
+            valueY = expressionPolish.calculate(valueX);
 
-        points.push_back(QPointF(valueX * lastScaleRatioX, valueY * lastScaleRatioY));
+            if (isPointInWindow(QPointF(valueX, valueY)))
+            {
+                points.push_back(QPointF(valueX * lastScaleRatioX, valueY * lastScaleRatioY));
+            }
+            else
+            {
+                stepMinimal /= 2;
+                points.clear();
+                break;
+            }
+        }
+
+        if (points.count() > numberOfPointsDefault-20)
+        {
+            break;
+        }
     }
+
     createBezierPoints();
+
+}
+
+bool GraphicFunction::isPointInWindow(QPointF point)
+{
+    if (std::isinf(point.y()))
+    {
+        return true;
+    }
+    MaxValues frame =  ScaleAxeWidget::maxValues;
+    if ((qAbs(point.x()) > 10 * qAbs(frame.maxX)) || (qAbs(point.x()) > 10 * qAbs(frame.minX)))
+    {
+        return false;
+    }
+    if ((qAbs(point.y()) > 10 * qAbs(frame.maxY)) || (qAbs(point.y()) > 10 * qAbs(frame.minY)))
+    {
+        return false;
+    }
+    return true;
 }
 
 QColor GraphicFunction::getColor() const
@@ -136,20 +172,41 @@ void GraphicFunction::draw(QPainter &painter)
 
     QPainterPath path;
     QPainterPath pathAfterGap;
+    bool gap = false;
 
     path.moveTo(bezierPoints[0].point);
 
     for (size_t k = 0; k < bezierPoints.size(); k++)
     {
-        path.cubicTo(bezierPoints.at(k).cp1, bezierPoints.at(k).cp2, bezierPoints.at(k).point);
+        if (std::isinf(bezierPoints.at(k).point.y()))
+        {
+            gap = true;
+            path.cubicTo(bezierPoints.at(k).cp1, bezierPoints.at(k).cp2, QPointF(bezierPoints.at(k).point.x(), -2e9));
+            pathAfterGap.moveTo(bezierPoints.at(k).point.x(), 2e9);
 
-        painter.setPen(QPen(Qt::blue, 8, Qt::SolidLine, Qt::RoundCap));
-        painter.drawPoint(bezierPoints.at(k).point);;
+        }
+
+        if(!gap)
+        {
+            path.cubicTo(bezierPoints.at(k).cp1, bezierPoints.at(k).cp2, bezierPoints.at(k).point);
+        }
+        else
+        {
+            pathAfterGap.cubicTo(bezierPoints.at(k).cp1, bezierPoints.at(k).cp2, bezierPoints.at(k).point);
+        }
+
+
+        //painter.setPen(QPen(Qt::blue, 8, Qt::SolidLine, Qt::RoundCap));
+       // painter.drawPoint(bezierPoints.at(k).point);;
     }
 
-    painter.setPen(QPen(Qt::red, 1, Qt::SolidLine, Qt::RoundCap));
+    //painter.setPen(QPen(Qt::red, 1, Qt::SolidLine, Qt::RoundCap));
 
     painter.drawPath(path);
+    if (gap)
+    {
+        painter.drawPath(pathAfterGap);
+    }
     painter.restore();
 }
 

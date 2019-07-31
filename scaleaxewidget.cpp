@@ -105,11 +105,11 @@ void ScaleAxeWidget::drawVerticalNotch(QPainter& painter)
 
         if (i == numNotch-1)
         {
-            maxValues.negativeValueY = num;
+            maxValues.minY = num;
         }
         if (i == -numNotch)
         {
-            maxValues.pozitiveValueY = num;
+            maxValues.maxY = num;
         }
     }
 }
@@ -130,11 +130,11 @@ void ScaleAxeWidget::drawHorizontalNotch(QPainter& painter)
         painter.drawText(xValue, 20, numberString);
         if (i == numNotch-1)
         {
-            maxValues.pozitiveValueX = num;
+            maxValues.maxX = num;
         }
         if (i == -numNotch)
         {
-            maxValues.negativeValueX = num;
+            maxValues.minX = num;
         }
     }
 }
