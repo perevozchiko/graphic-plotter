@@ -1,2 +1,2 @@
-# graphic-plotter
+# Graphics-plotter
 
