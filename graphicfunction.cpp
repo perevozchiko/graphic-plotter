@@ -1,6 +1,7 @@
 #include "graphicfunction.h"
 #include <QVector2D>
 #include <QtMath>
+#include <QPainterPath>
 
 
 GraphicFunction::GraphicFunction()
