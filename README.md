@@ -1,3 +1,3 @@
-# Graphics-plotter
+# Graphic-plotter
 
 ![view](view.png)
